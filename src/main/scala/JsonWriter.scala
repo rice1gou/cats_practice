@@ -9,15 +9,24 @@ case class JsonNumber(get: Int) extends Json
 case object JsonNull extends Json
 
 trait JsonWriter[A] {
-  def writer(value: A): Json
+  def write(value: A): Json
 }
 
 final case class Person(name: String, email: String)
 
 object JsonWriterInstances {
   implicit val StringWriter: JsonWriter[String] = new JsonWriter[String] {
-    def writer(value: String): Json = {
+    def write(value: String): Json = {
       JsonString(value)
+    }
+  }
+
+  implicit val personWriter: JsonWriter[Person] = new JsonWriter[Person] {
+    def write(value: Person): Json = {
+      JsonObject(Map(
+        "name" -> JsonString(value.name),
+        "email" -> JsonString(value.email)
+      ))
     }
   }
 }
